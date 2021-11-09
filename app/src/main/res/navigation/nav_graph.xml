@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/showNotesFragment">
+
+    <fragment
+        android:id="@+id/showNotesFragment"
+        android:name="com.turki.todolist.ui.ShowNotesFragment"
+        android:label="Show All Notes"
+        tools:layout="@layout/fragment_show_notes" >
+        <action
+            android:id="@+id/action_showNotesFragment_to_addNoteFragment"
+            app:destination="@id/addNoteFragment"
+            app:enterAnim="@anim/nav_default_enter_anim" />
+        <action
+            android:id="@+id/action_showNotesFragment_to_editNoteFragment"
+            app:destination="@id/editNoteFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addNoteFragment"
+        android:name="com.turki.todolist.ui.AddNoteFragment"
+        android:label="Note Details"
+        tools:layout="@layout/fragment_add_note" >
+        <action
+            android:id="@+id/action_addNoteFragment_to_showNotesFragment"
+            app:popUpTo="@id/showNotesFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/editNoteFragment"
+        android:name="com.turki.todolist.ui.EditNoteFragment"
+        android:label="Edit The Task"
+        tools:layout="@layout/fragment_edit_note" >
+        <argument
+            android:name="note"
+            app:argType="com.turki.todolist.model.entity.Note" />
+        <action
+            android:id="@+id/action_editNoteFragment_to_showNotesFragment"
+            app:popUpTo="@id/showNotesFragment" />
+    </fragment>
+</navigation>

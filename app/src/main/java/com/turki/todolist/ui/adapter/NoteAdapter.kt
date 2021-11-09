@@ -39,79 +39,76 @@ class NoteAdapter() : RecyclerView.Adapter<NoteAdapter.NoteViewHolder>() {
         fun bind(currentNote: Note) {
             noteDatabase = NoteDatabase.getInstance(itemView.context)
 
+            if (currentNote != null) {
+                noteTitle.setText(currentNote.noteTitle.toString())
+                noteCategory.setText(currentNote.noteCategory)
+                noteCheckBox.isChecked = currentNote.noteIsDone
+                noteDueDate.setText(currentNote.noteDueDate)
 
-            noteTitle.setText(currentNote.noteTitle.toString())
-            noteCategory.setText(currentNote.noteCategory)
-            noteCheckBox.isChecked = currentNote.noteIsDone
-            noteDueDate.setText(currentNote.noteDueDate)
+                var currentDateList: List<String> = Date().dateToString("dd-MM-yyyy").split('-')
+                var dueDateList: List<String> = currentNote.noteDueDate.split('-')
 
-            var currentDateList: List<String> = Date().dateToString("dd-MM-yyyy").split('-')
-            var dueDateList: List<String> = currentNote.noteDueDate.split('-')
-
-            if (currentNote.noteIsDone) {
-                noteStatus.setBackgroundColor(Color.GREEN)
-                noteStatus2.setBackgroundColor(Color.GREEN)
-//                notifyDataSetChanged()
-            } else if ((dueDateList[2].toInt() < currentDateList[2].toInt())
-                || (dueDateList[1].toInt() < currentDateList[1].toInt() && dueDateList[2].toInt() == currentDateList[2].toInt())
-                || (dueDateList[0].toInt() < currentDateList[0].toInt() && dueDateList[1].toInt() == currentDateList[1].toInt() && dueDateList[2].toInt() == currentDateList[2].toInt())
-            ) {
-                noteStatus.setBackgroundColor(Color.RED)
-                noteStatus2.setBackgroundColor(Color.RED)
-//                notifyDataSetChanged()
-            }else{
-                noteStatus.setBackgroundColor(Color.rgb(255, 152, 0))
-                noteStatus2.setBackgroundColor(Color.rgb(255, 152, 0))
-
-            }
-
-            itemView.setOnClickListener{
-                onListItemClick?.onItemClick(currentNote)
-            }
-
-            btn_close.setOnClickListener{
-                onListItemClick?.onItemDelete(currentNote)
-            }
-
-            noteCheckBox.setOnClickListener{
-                if (noteCheckBox.isChecked) {
-                    currentNote.noteIsDone = true
+                if (currentNote.noteIsDone) {
                     noteStatus.setBackgroundColor(Color.GREEN)
                     noteStatus2.setBackgroundColor(Color.GREEN)
-                    GlobalScope.launch(Dispatchers.IO) {
-                        noteDatabase.noteDAO().updateNote(
-                            Note(
-                                currentNote.noteId,
-                                currentNote.noteTitle,
-                                currentNote.noteCategory,
-                                currentNote.noteDescription,
-                                currentNote.noteCreationDate,
-                                currentNote.noteDueDate,
-                                true
-                            )
-                        )
-                    }
+                } else if ((dueDateList[2].toInt() < currentDateList[2].toInt())
+                    || (dueDateList[1].toInt() < currentDateList[1].toInt() && dueDateList[2].toInt() == currentDateList[2].toInt())
+                    || (dueDateList[0].toInt() < currentDateList[0].toInt() && dueDateList[1].toInt() == currentDateList[1].toInt() && dueDateList[2].toInt() == currentDateList[2].toInt())
+                ) {
+                    noteStatus.setBackgroundColor(Color.RED)
+                    noteStatus2.setBackgroundColor(Color.RED)
                 } else {
-                    currentNote.noteIsDone = false
                     noteStatus.setBackgroundColor(Color.rgb(255, 152, 0))
                     noteStatus2.setBackgroundColor(Color.rgb(255, 152, 0))
-                    GlobalScope.launch(Dispatchers.IO) {
-                        noteDatabase.noteDAO().updateNote(
-                            Note(
-                                currentNote.noteId,
-                                currentNote.noteTitle,
-                                currentNote.noteCategory,
-                                currentNote.noteDescription,
-                                currentNote.noteCreationDate,
-                                currentNote.noteDueDate,
-                                false
-                            )
-                        )
-                    }
                 }
-                notifyDataSetChanged()
-            }
 
+                itemView.setOnClickListener {
+                    onListItemClick?.onItemClick(currentNote)
+                }
+
+                btn_close.setOnClickListener {
+                    onListItemClick?.onItemDelete(currentNote)
+                }
+
+                noteCheckBox.setOnClickListener {
+                    if (noteCheckBox.isChecked) {
+                        currentNote.noteIsDone = true
+                        noteStatus.setBackgroundColor(Color.GREEN)
+                        noteStatus2.setBackgroundColor(Color.GREEN)
+                        GlobalScope.launch(Dispatchers.IO) {
+                            noteDatabase.noteDAO().updateNote(
+                                Note(
+                                    currentNote.noteId,
+                                    currentNote.noteTitle,
+                                    currentNote.noteCategory,
+                                    currentNote.noteDescription,
+                                    currentNote.noteCreationDate,
+                                    currentNote.noteDueDate,
+                                    true
+                                )
+                            )
+                        }
+                    } else {
+                        currentNote.noteIsDone = false
+                        noteStatus.setBackgroundColor(Color.rgb(255, 152, 0))
+                        noteStatus2.setBackgroundColor(Color.rgb(255, 152, 0))
+                        GlobalScope.launch(Dispatchers.IO) {
+                            noteDatabase.noteDAO().updateNote(
+                                Note(
+                                    currentNote.noteId,
+                                    currentNote.noteTitle,
+                                    currentNote.noteCategory,
+                                    currentNote.noteDescription,
+                                    currentNote.noteCreationDate,
+                                    currentNote.noteDueDate,
+                                    false
+                                )
+                            )
+                        }
+                    }
+                    notifyDataSetChanged()
+                }
+            }
         }
 
 
